@@ -53,9 +53,7 @@ class KNNClassifier(object):
             # - Set y_pred[i] to the most common class among them
 
             # ====== YOUR CODE: ======
-            _, indices = dist_matrix[:, i].topk(self.k, largest=False)
-            closest_labels = [self.y_train[index] for index in indices]
-            y_pred[i] = max(set(closest_labels), key=closest_labels.count)
+            raise NotImplementedError()
             # ========================
 
         return y_pred
@@ -82,13 +80,7 @@ class KNNClassifier(object):
 
         dists = torch.tensor([])
         # ====== YOUR CODE: ======
-        # a^2:
-        test_norm = (x_test**2).sum(1).view(1, -1)
-        # b^2:
-        train_norm = (self.x_train**2).sum(1).view(-1, 1)
-
-        # (a-b)^2 = a^2 + b^2 - 2*a*b:
-        dists = test_norm + train_norm - 2.0 * torch.mm(self.x_train, x_test.t())
+        raise NotImplementedError()
         # ========================
 
         return dists
@@ -109,7 +101,7 @@ def accuracy(y: Tensor, y_pred: Tensor):
 
     accuracy = None
     # ====== YOUR CODE: ======
-    accuracy = float(len(y[y == y_pred]) / len(y))
+    raise NotImplementedError()
     # ========================
 
     return accuracy
@@ -139,19 +131,7 @@ def find_best_k(ds_train: Dataset, k_choices, num_folds):
         # different split each iteration), or implement something else.
 
         # ====== YOUR CODE: ======
-        # TODO: make K-fold
-        print(f'Iteration {i}: Testing for k={k}')
-        curr_accuracies = []
-        for j in list(range(num_folds)):
-            test_indices, train_indices = dataloaders.get_indices(ds_train, 1/num_folds, part=j)
-            dl_train, dl_valid = dataloaders.get_dl(ds_train, train_indices, test_indices)
-            model.train(dl_train)
-            x_test, y = dataloader_utils.flatten(dl_valid)
-            y_pred = model.predict(x_test)
-            curr_accuracies.append(accuracy(y_pred, y))
-            print(f'Inner Iteration {j}: {curr_accuracies[-1]}')
-        accuracies.append(curr_accuracies)
-        print(f'Mean acc for k={k}: {np.mean(accuracies[-1])}')
+        raise NotImplementedError()
         # ========================
 
     best_k_idx = np.argmax([np.mean(acc) for acc in accuracies])
