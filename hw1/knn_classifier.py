@@ -140,7 +140,7 @@ def find_best_k(ds_train: Dataset, k_choices, num_folds):
 
         # ====== YOUR CODE: ======
         # TODO: make K-fold
-        print(f'Iteration {i}: Testing for k={k}')
+        # print(f'Iteration {i}: Testing for k={k}')
         curr_accuracies = []
         for j in list(range(num_folds)):
             test_indices, train_indices = dataloaders.get_indices(ds_train, 1/num_folds, part=j)
@@ -149,9 +149,9 @@ def find_best_k(ds_train: Dataset, k_choices, num_folds):
             x_test, y = dataloader_utils.flatten(dl_valid)
             y_pred = model.predict(x_test)
             curr_accuracies.append(accuracy(y_pred, y))
-            print(f'Inner Iteration {j}: {curr_accuracies[-1]}')
+            # print(f'Inner Iteration {j}: {curr_accuracies[-1]}')
         accuracies.append(curr_accuracies)
-        print(f'Mean acc for k={k}: {np.mean(accuracies[-1])}')
+        # print(f'Mean acc for k={k}: {np.mean(accuracies[-1])}')
         # ========================
 
     best_k_idx = np.argmax([np.mean(acc) for acc in accuracies])

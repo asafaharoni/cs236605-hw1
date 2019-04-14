@@ -18,13 +18,11 @@ class LinearClassifier(object):
         self.n_features = n_features
         self.n_classes = n_classes
 
-        # TODO: Create weights tensor of appropriate dimensions
+        # TODO: Create weights tensor of appropriate dimensions \ DONE
         # Initialize it from a normal dist with zero mean and the given std.
 
-        self.weights = None
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
+        weights_maker = torch.distributions.normal.Normal(torch.tensor([0.0]), torch.tensor([weight_std]))
+        self.weights = weights_maker.sample((n_features*n_classes,)).view(n_features,-1)
 
     def predict(self, x: Tensor):
         """
@@ -38,15 +36,11 @@ class LinearClassifier(object):
                 per sample.
         """
 
-        # TODO: Implement linear prediction.
+        # TODO: Implement linear prediction. \\ DONE
         # Calculate the score for each class using the weights and
         # return the class y_pred with the highest score.
-
-        y_pred, class_scores = None, None
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
-
+        class_scores = torch.mm(x, self.weights)
+        y_pred = torch.argmax(class_scores,dim=1)
         return y_pred, class_scores
 
     @staticmethod
@@ -64,11 +58,7 @@ class LinearClassifier(object):
         # labels to the ground truth labels to obtain the accuracy (in %).
         # Do not use an explicit loop.
 
-        acc = None
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
-        # ========================
-
+        acc = float(torch.sum(y==y_pred))/y.shape[0]
         return acc * 100
 
     def train(self,
@@ -99,7 +89,43 @@ class LinearClassifier(object):
             average_loss = 0
 
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            # i_batch = 0
+            for sample_batched in dl_train:
+                # # Forward pass
+                X, y =  sample_batched
+                y_pred, x_scores = self.predict(X)
+                # # Calculate loss & gradient
+                loss = loss_fn(X, y, x_scores, y_pred)
+                loss += weight_decay * torch.norm(self.weights)**2
+                grad = loss_fn.grad()
+                # # Update weights
+                self.weights = self.weights - learn_rate * grad
+            # # Evaluate on the validation set
+            val_loss_sum = 0
+            val_accuracy_sum = 0
+            for sample_batched in dl_valid:
+                # # Forward pass
+                X, y =  sample_batched
+                y_pred, x_scores = self.predict(X)
+                # # Calculate loss & gradient
+                val_loss_sum += loss_fn(X, y, x_scores, y_pred)
+                val_loss_sum += weight_decay * torch.norm(self.weights)**2
+                val_accuracy_sum += self.evaluate_accuracy(y,y_pred)
+            valid_res.accuracy.append(val_accuracy_sum/len(dl_valid))
+            valid_res.loss.append(val_loss_sum/len(dl_valid))
+            # # Evaluate on the test set
+            train_loss_sum = 0
+            train_accuracy_sum = 0
+            for sample_batched in dl_train:
+                # # Forward pass
+                X, y = sample_batched
+                y_pred, x_scores = self.predict(X)
+                # # Calculate loss & gradient
+                train_loss_sum += loss_fn(X, y, x_scores, y_pred)
+                train_loss_sum += weight_decay * torch.norm(self.weights) ** 2
+                train_accuracy_sum += self.evaluate_accuracy(y, y_pred)
+            train_res.accuracy.append(train_accuracy_sum / len(dl_train))
+            train_res.loss.append(train_loss_sum / len(dl_train))
             # ========================
             print('.', end='')
 
@@ -119,7 +145,9 @@ class LinearClassifier(object):
         # The output shape should be (n_classes, C, H, W).
 
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        weights = self.weights.clone()[:-1,:]
+        weights.unsqueeze_(0)
+        weights.transpose_(0,2)
+        w_images = weights.view(-1,*img_shape)
         # ========================
-
         return w_images

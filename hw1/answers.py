@@ -22,41 +22,30 @@ generalization failed.
 
 part3_q1 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+$\Delta$ is suppose to be the permissible margin between two classes samples.
+In our case we allow soft margins so in case we choose a bigger $\Delta$ then the weights will be bigger as well.
+We note that also $\Delta$ do not takes place in the process of weights update because the gradient of $L(W)$ is not dependent on $\Delta$.
 """
 
 part3_q2 = r"""
-**Your answer:**
+1. The model learns the main regions that are constantly used to mark each number. 
+In the figure "0" one never uses the inside region of the number thus, this region is black.
+It is noticeable that some figures that mark the number "1" are italic to the left and the others are italic to the right.
+Some of the mistakes stemmed from a strange form of number writing or, from digits looking like other digits.
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+2. A KNN model predicts an answer based on few closest samples while the SVM model tries to find correct choice of weights based on the whole data set.
 """
 
 part3_q3 = r"""
 **Your answer:**
+1. The learning rate is good.  
+It goes down pretty quick together with the validation set loss and it seems to be converging after 30 epochs.
+If the learning rate was lower, then it probably would not have reached convergence. 
+If the learning rate was faster we would probably see a phenomenon of overfitting.
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+2. 
+Based on the graph of the training and test set accuracy, would you say that the model is sightly overfitted to the training set.
+The training set accuracy reach a higher value (~91.5%) while the test-set accuracy after training is 88.1%.
 """
 
 # ==============
